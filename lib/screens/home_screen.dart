@@ -1,4 +1,5 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
@@ -24,7 +25,10 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: ColorsSettings.navColor,
         actions: [
-          IconButton(onPressed: (){}, icon: Icon(Icons.access_alarm_outlined)),
+          IconButton(
+            onPressed: (){}, 
+            icon: Icon(Icons.access_alarm_outlined)
+          ),
           GestureDetector(
             onTap: (){},
             child: MouseRegion(
@@ -41,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       },),
       //endDrawer: Drawer(),
-      drawer: Drawer(),
+      drawer: myDrawer(),
       bottomNavigationBar: ConvexAppBar(
         items: const[
           TabItem(icon: Icons.home, title: 'Home'),
@@ -55,12 +59,14 @@ class _HomeScreenState extends State<HomeScreen> {
         key: _key,
         children: [
           FloatingActionButton.small(
+            heroTag: "btn1",
             onPressed: (){
               GlobalValues.banThemeDark.value = false;
             },
             child: const Icon(Icons.light_mode)
           ),
           FloatingActionButton.small(
+            heroTag: "btn2",
             onPressed: (){
               GlobalValues.banThemeDark.value = true;
             },
@@ -70,4 +76,28 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  Widget myDrawer(){
+    return Drawer(
+      child: ListView(
+        children: [
+          const UserAccountsDrawerHeader(
+            currentAccountPicture: CircleAvatar(
+              backgroundImage: NetworkImage('https://i.pravatar.cc/300'),
+            ),
+            accountName: Text('Rubensin Torres Frias'), 
+            accountEmail: Text('ruben.torres@itcelaya.edu.mx')
+          ),
+          ListTile(
+            onTap: () => Navigator.pushNamed(context, '/db'),
+            title: Text('Movies List'),
+            subtitle: Text('Database of movies'),
+            leading: Icon(Icons.movie),
+            trailing: Icon(Icons.chevron_right),
+          )
+        ],
+      ),
+    );
+  }
+
 }

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
+import 'package:pmsn2024b/models/moviesdao.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -24,13 +25,18 @@ class MoviesDatabase {
       version: VERSIONDB,
       onCreate: (db, version) {
 
-        String query ='''
-        CREATE TABLE tblgenre(
+
+        String query1 = '''
+          CREATE TABLE tblgenre(
           idGenre char(1) PRIMARY KEY,
           dscgenre VARCHAR(50)  
         );
+        ''';
 
-        CREATE TABLE tblmovies(
+        db.execute(query1);
+
+        String query2 ='''
+         CREATE TABLE tblmovies(
           idMovie INTEGER PRIMARY KEY,
           nameMovie VARCHAR(100),
           overview TEXT,
@@ -39,18 +45,48 @@ class MoviesDatabase {
           releaseDate CHAR(10),
           CONSTRAINT fk_gen FOREIGN KEY(idGenre) REFERENCES tblgenre(idGenre)
         );''';
-        db.execute(query);
+        db.execute(query2);
       },
     );
   } // initdatabase
 
   Future<int> INSERT(String table, Map<String,dynamic> row) async {
     var con = await database;
-    return con.insert(table, row);
+    return await con.insert(table, row);
   }
-  Future<int> UPDATE() async {}
-  Future<int> DELETE() async {}
-  Future<List<MoviesDAO>> SELECT() async {}
 
+  Future<int> UPDATE(String table, Map<String,dynamic> row) async {
+    var con = await database;
+    return await con.update(table, row, where: 'idMovie = ?', whereArgs: [row['idMovie']]);
+  }
 
+  Future<int> DELETE(String table, int idMovie) async {
+    var con = await database;
+    return await con.delete(table, where: 'idMovie = ?', whereArgs: [idMovie]);
+  }
+
+  Future<List<MoviesDAO>?> SELECT() async {
+    var con = await database;
+    var result = await con.query('tblmovies');
+    return result.map((movie) => MoviesDAO.fromMap(movie)).toList(); 
+  }
 }
+
+/* CREATE TABLE tblmovies(
+          idMovie INTEGER PRIMARY KEY,
+          nameMovie VARCHAR(100),
+          overview TEXT,
+          idGenre char(1),
+          imgMovie VARCHAR(150),
+          releaseDate CHAR(10),
+          CONSTRAINT fk_gen FOREIGN KEY(idGenre) REFERENCES tblgenre(idGenre)
+
+CONSTRAINT fk_gen FOREIGN KEY(idGenre) REFERENCES tblgenre(idGenre)
+
+            CREATE TABLE tblgenre(
+          idGenre char(1) PRIMARY KEY,
+          dscgenre VARCHAR(50)  
+        );
+        
+        
+        );*/
