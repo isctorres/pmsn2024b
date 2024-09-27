@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pmsn2024b/database/movies_database.dart';
+import 'package:pmsn2024b/models/moviesdao.dart';
+import 'package:pmsn2024b/settings/global_values.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class MovieView extends StatefulWidget {
-  const MovieView({super.key});
+  MovieView({super.key, this.moviesDAO });
+
+  MoviesDAO? moviesDAO;
 
   @override
   State<MovieView> createState() => _MovieViewState();
@@ -23,6 +27,13 @@ class _MovieViewState extends State<MovieView> {
   void initState() {
     super.initState();
     moviesDatabase = MoviesDatabase();
+
+    if( widget.moviesDAO != null ){
+      conName.text = widget.moviesDAO!.nameMovie!;
+      conOverview.text = widget.moviesDAO!.overview!;
+      conImgMovie.text = widget.moviesDAO!.imgMovie!;
+      conRelease.text = widget.moviesDAO!.releaseDate!;
+    }
   }
 
   @override
@@ -81,6 +92,7 @@ class _MovieViewState extends State<MovieView> {
         }).then((value){
 
           if( value > 0 ){
+            GlobalValues.banUpdListMovies.value = !GlobalValues.banUpdListMovies.value;
             return QuickAlert.show(
               context: context,
               type: QuickAlertType.success,
