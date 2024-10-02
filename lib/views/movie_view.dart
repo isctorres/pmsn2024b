@@ -83,34 +83,65 @@ class _MovieViewState extends State<MovieView> {
     final btnSave = ElevatedButton(
       onPressed: (){
 
-        moviesDatabase!.INSERT('tblmovies', {
-          "nameMovie" : conName.text,
-          "overview" : conOverview.text,
-          "idGenre" : 1,
-          "imgMovie" : conImgMovie.text,
-          "releaseDate" : conRelease.text
-        }).then((value){
+        if( widget.moviesDAO == null ){
+          moviesDatabase!.INSERT('tblmovies', {
+            "nameMovie" : conName.text,
+            "overview" : conOverview.text,
+            "idGenre" : 1,
+            "imgMovie" : conImgMovie.text,
+            "releaseDate" : conRelease.text
+          }).then((value){
 
-          if( value > 0 ){
-            GlobalValues.banUpdListMovies.value = !GlobalValues.banUpdListMovies.value;
+            if( value > 0 ){
+              GlobalValues.banUpdListMovies.value = !GlobalValues.banUpdListMovies.value;
+              return QuickAlert.show(
+                context: context,
+                type: QuickAlertType.success,
+                text: 'Transaction Completed Successfully!',
+                autoCloseDuration: const Duration(seconds: 2),
+                showConfirmBtn: false,
+              );
+            }else{
+              return QuickAlert.show(
+                context: context,
+                type: QuickAlertType.error,
+                text: 'Something was wrong! :()',
+                autoCloseDuration: const Duration(seconds: 2),
+                showConfirmBtn: false,
+              );
+            }
+          });
+        }else{
+          moviesDatabase!.UPDATE('tblmovies', {
+            "idMovie" : widget.moviesDAO!.idMovie,
+            "nameMovie" : conName.text,
+            "overview" : conOverview.text,
+            "idGenre" : 1,
+            "imgMovie" : conImgMovie.text,
+            "releaseDate" : conRelease.text
+          }).then((value){
+
+            final msj;
+            QuickAlertType type = QuickAlertType.success;
+            if( value > 0 ){
+              GlobalValues.banUpdListMovies.value = !GlobalValues.banUpdListMovies.value;
+              type = QuickAlertType.success;
+              msj = 'Transaction Completed Successfully!';
+            }else{
+              type = QuickAlertType.error;
+              msj = 'Something was wrong! :()';
+            }
+
             return QuickAlert.show(
               context: context,
-              type: QuickAlertType.success,
-              text: 'Transaction Completed Successfully!',
+              type: type,
+              text: msj,
               autoCloseDuration: const Duration(seconds: 2),
               showConfirmBtn: false,
             );
-          }else{
-            return QuickAlert.show(
-              context: context,
-              type: QuickAlertType.error,
-              text: 'Something was wrong! :()',
-              autoCloseDuration: const Duration(seconds: 2),
-              showConfirmBtn: false,
-            );
-          }
 
-        });
+          });
+        }
       }, 
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.blue[200]
