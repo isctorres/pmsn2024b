@@ -4,6 +4,7 @@ import 'package:pmsn2024b/network/popular_api.dart';
 import 'package:pmsn2024b/screens/home_screen.dart';
 import 'package:pmsn2024b/screens/login_screen.dart';
 import 'package:pmsn2024b/screens/movies_screen.dart';
+import 'package:pmsn2024b/screens/popular_screen.dart';
 import 'package:pmsn2024b/settings/global_values.dart';
 import 'package:pmsn2024b/settings/theme_settings.dart';
 
@@ -28,8 +29,9 @@ class MyApp extends StatelessWidget {
             ? ThemeSettings.darkTheme() 
             : ThemeSettings.ligthTheme(),
           routes: {
-            "/home" : (context) => HomeScreen(),
-            "/db" : (context) => MoviesScreen()
+            "/home" : (context) => const HomeScreen(),
+            "/db" : (context) => const MoviesScreen(),
+            "/popular" :(context) => const PopularScreen()
           },
         );
       }
